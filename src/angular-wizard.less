@@ -1,3 +1,7 @@
+@steps-position: absolute;
+@steps-margin: 0;
+@steps-margin-top-layout: 0;
+
 .steps-indicator {
   /* ---- steps quantity ---- */
 
@@ -6,16 +10,21 @@
   @color-done:    #339933;
   @color-editing: #FF0000;
 
-  position: absolute;
+  position: @steps-position;
   right: 0;
   bottom: 0;
   left: 0;
-  margin: 0;
+  margin: @steps-margin;
   padding: 0;
   height: 30px;
   list-style: none;
-  
 
+  &.top-layout {
+    margin: @steps-margin-top-layout;
+    &:before {
+      top: 33px;
+    }
+  }
 
   &:before {
     background-color: @color-default;
@@ -70,9 +79,9 @@
   }
 
   /* --- http://www.paulirish.com/2012/box-sizing-border-box-ftw/ ---- */
-  * { 
+  * {
     -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box; 
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
 
@@ -93,6 +102,12 @@
       font-weight: bold;
       transition: 0.25s;
       cursor: pointer;
+
+      &.top-layout {
+        &:before {
+          top: 27px;
+        }
+      }
 
       &:before {
         position: absolute;
@@ -117,7 +132,7 @@
   }
 
   &.steps-3  li {
-    width: ~'calc(100% / 3)';   
+    width: ~'calc(100% / 3)';
   }
 
   &.steps-4  li {

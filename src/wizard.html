@@ -1,8 +1,18 @@
 <div>
-    <div class="steps" ng-transclude></div>
-    <ul class="steps-indicator steps-{{steps.length}}" ng-if="!hideIndicators">
+    <ul class="steps-indicator steps-{{steps.length}} top-layout" ng-if="hideIndicators != 'top' && hideIndicators != 'both'">
       <li ng-class="{default: !step.completed && !step.selected, current: step.selected && !step.completed, done: step.completed && !step.selected, editing: step.selected && step.completed}" ng-repeat="step in steps">
-        <a ng-click="goTo(step)">{{step.title}}</a>
+        <a class="top-layout" ng-click="goToStep(step)">{{step.title}}</a>
+      </li>
+    </ul>
+    <div style="width:100%" ng-if="!hideProgressBar">
+      <div class="progress progress-striped active center-block" style="width:75%">
+        <div class="progress-bar progress-bar-success" style="width:{{getProgress()}}%"></div>
+      </div>
+    </div>
+    <div class="steps" ng-transclude></div>
+    <ul class="steps-indicator steps-{{steps.length}}" ng-if="hideIndicators != 'bottom' && hideIndicators != 'both'">
+      <li ng-class="{default: !step.completed && !step.selected, current: step.selected && !step.completed, done: step.completed && !step.selected, editing: step.selected && step.completed}" ng-repeat="step in steps">
+        <a ng-click="goToStep(step)">{{step.title}}</a>
       </li>
     </ul>
 </div>

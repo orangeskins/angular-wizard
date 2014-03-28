@@ -6,15 +6,22 @@ angular.module('mgo-angular-wizard').directive('wizard', function() {
         scope: {
             currentStep: '=',
             onFinish: '&',
-            hideIndicators: '=',
+            onGoToStep: '&',
+            hideIndicators: '@',
+            hideProgressBar: '=',
             editMode: '=',
             name: '@'
         },
-        templateUrl: function(element, attributes) {
-          return attributes.template || "wizard.html";
-        },
+        templateUrl: 'wizard.html',
         controller: ['$scope', '$element', 'WizardHandler', function($scope, $element, WizardHandler) {
-            
+
+            $scope.finished = false;
+
+            $scope.getProgress = function() {
+                var index = _.indexOf($scope.steps , $scope.selectedStep);
+                return ((index + 1) / $scope.steps.length) * 100;
+            }
+
             WizardHandler.addWizard($scope.name || WizardHandler.defaultName, this);
             $scope.$on('$destroy', function() {
                 WizardHandler.removeWizard($scope.name || WizardHandler.defaultName);
@@ -48,8 +55,16 @@ angular.module('mgo-angular-wizard').directive('wizard', function() {
                     $scope.goTo($scope.steps[0]);
                 }
             };
-            
+
+            $scope.goToStep = function(step) {
+                if ($scope.onGoToStep && $scope.onGoToStep({ currentStepId:_.indexOf($scope.steps , $scope.selectedStep), nextStepId:_.indexOf($scope.steps , step)})) {
+                    $scope.goTo(step);
+                }
+            };
+
             $scope.goTo = function(step) {
+                if ($scope.finished) return;
+
                 unselectAll();
                 $scope.selectedStep = step;
                 if (!_.isUndefined($scope.currentStep)) {
@@ -88,6 +103,13 @@ angular.module('mgo-angular-wizard').directive('wizard', function() {
             };
             
             this.finish = function() {
+                $scope.getProgress = function() {
+                    return 100;
+                }
+                $scope.selectedStep.completed = true;
+                $scope.selectedStep.selected = false;
+                $scope.finished = true;
+
                 $scope.onFinish && $scope.onFinish(); 
             };
             
